@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol HomeScreenViewModelDelegate {
+protocol HomeScreenViewModelDelegate: AnyObject {
     func refreshData()
     func loading(_ isLoading: Bool)
     func displayError(_ message: String)
@@ -15,7 +15,7 @@ protocol HomeScreenViewModelDelegate {
 
 class HomeScreenViewModel {
     
-    var viewDelegate: HomeScreenViewModelDelegate
+    weak var viewDelegate: HomeScreenViewModelDelegate?
     private let networkService: NetworkServiceProtocol
     private(set) var images: [FlickrItem] = []
     
@@ -27,27 +27,27 @@ class HomeScreenViewModel {
     }
     
     func searchImages(query: String) {
-        viewDelegate.loading(true)
+        viewDelegate?.loading(true)
         networkService
             .searchImages(query: query,
                           completion: { [weak self] result in
-            self?.viewDelegate.loading(false)
+            self?.viewDelegate?.loading(false)
             switch result {
             case .success(let feed):
                 self?.images = feed.items
             case .failure(let error):
                 self?.networkError(error)
             }
-            self?.viewDelegate.refreshData()
+            self?.viewDelegate?.refreshData()
         })
     }
     
     func networkError(_ error: NetworkError) {
         switch error {
         case .cancelled:
-            print(error.message)
+            print("HomeScreenViewModel Error: \(error.message)")
         default:
-            viewDelegate.displayError(error.message)
+            viewDelegate?.displayError(error.message)
         }
     }
 }

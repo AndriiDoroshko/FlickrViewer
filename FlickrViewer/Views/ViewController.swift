@@ -69,7 +69,7 @@ class ViewController: UIViewController {
 
         // Set constraints
         NSLayoutConstraint.activate([
-            pullToRefreshView.topAnchor.constraint(equalTo: searchBar.safeAreaLayoutGuide.bottomAnchor),
+            pullToRefreshView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -64),
             pullToRefreshView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             pullToRefreshView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             
@@ -111,7 +111,7 @@ extension ViewController: HomeScreenViewModelDelegate {
         if isLoading {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.pullToRefreshView.isHidden = true
+                guard self.collectionView.refreshControl?.isRefreshing == false else { return }
                 self.collectionView.refreshControl?.beginRefreshing(in: self.collectionView)
             }
             return
@@ -119,14 +119,15 @@ extension ViewController: HomeScreenViewModelDelegate {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.collectionView.refreshControl?.endRefreshing()
-                self.pullToRefreshView.isHidden = !self.viewModel.images.isEmpty
             }
         }
     }
     
     func refreshData() {
         DispatchQueue.main.async { [weak self] in
-            self?.collectionView.reloadData()
+            guard let self = self else { return }
+            self.pullToRefreshView.isHidden = !self.viewModel.images.isEmpty
+            self.collectionView.reloadData()
         }
     }
 }

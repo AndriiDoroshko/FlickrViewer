@@ -23,30 +23,32 @@ final class HomeViewModelTests: XCTestCase {
         let mockViewDelegate = MockHomeScreenViewModelDelegate()
         let mockNetworkService = MockNetworkService()
         mockNetworkService.stubbedSearchImagesResponse
-        = Result.success(FlickrFeed(title: "title",
-                                    link: "URL",
-                                    description: "description",
-                                    modified: "modifiers",
-                                    generator: "generator",
-                                    items: [FlickrItem(title: "title",
-                                                       link: "link",
-                                                       media: Media(m: "media"),
-                                                       dateTaken: "dateTaken",
-                                                       description: "description",
-                                                       published: "published",
-                                                       author: "author",
-                                                       authorID: "authorID",
-                                                       tags: "tags")]))
+        = Result.success(FlickrFeed(
+            title: "title",
+            link: "URL",
+            description: "description",
+            modified: "modifiers",
+            generator: "generator",
+            items: [FlickrItem(title: "title",
+                               link: "link",
+                               media: Media(m: "media"),
+                               dateTaken: "dateTaken",
+                               description: "description",
+                               published: "published",
+                               author: "author",
+                               authorID: "authorID",
+                               tags: "tags")]))
         
-        let sut = HomeScreenViewModel(viewDelegate: mockViewDelegate,
-                                      networkService: mockNetworkService)
+        let sut = HomeScreenViewModel(
+            viewDelegate: mockViewDelegate,
+            networkService: mockNetworkService)
         
         XCTAssertTrue(mockNetworkService.invokedSearchImages)
         XCTAssertEqual(mockNetworkService.invokedSearchImagesCount, 1)
         
         XCTAssertTrue(mockViewDelegate.invokedRefreshData)
         XCTAssertEqual(mockViewDelegate.invokedRefreshDataCount, 1)
-
+        
     }
-
+    
 }

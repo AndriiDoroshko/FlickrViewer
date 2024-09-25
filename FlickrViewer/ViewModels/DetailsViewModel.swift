@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol DetailsViewModelDelegate {
+protocol DetailsViewModelDelegate: AnyObject {
     func refreshData()
     func loading(_ isLoading: Bool)
     func displayError(_ message: String)
@@ -16,7 +16,7 @@ protocol DetailsViewModelDelegate {
 
 class DetailsViewModel {
     
-    var viewDelegate: DetailsViewModelDelegate
+    weak var viewDelegate: DetailsViewModelDelegate?
     private let networkService: NetworkServiceProtocol
     
     private(set) var flickrItem: FlickrItem
@@ -32,13 +32,13 @@ class DetailsViewModel {
     }
     
     func downloadImage(query: String) {
-        viewDelegate.loading(true)
+        viewDelegate?.loading(true)
         networkService.downloadImage(from: query) { [weak self] result in
-            self?.viewDelegate.loading(false)
+            self?.viewDelegate?.loading(false)
             switch result {
             case .success(let image):
                 self?.image = image
-                self?.viewDelegate.refreshData()
+                self?.viewDelegate?.refreshData()
             case .failure(let error):
                 self?.networkError(error)
             }
@@ -48,9 +48,9 @@ class DetailsViewModel {
     func networkError(_ error: NetworkError) {
         switch error {
         case .cancelled:
-            print(error.message)
+            print("DetailsViewModel Error: \(error.message)")
         default:
-            viewDelegate.displayError(error.message)
+            viewDelegate?.displayError(error.message)
         }
     }
 }

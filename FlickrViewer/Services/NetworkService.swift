@@ -31,6 +31,10 @@ enum NetworkError: Error {
     }
 }
 
+enum NetworkURLs {
+    static let feedsUrlString = "https://api.flickr.com/services/feeds/photos_public.gne?format=json&nojsoncallback=1&tags="
+}
+
 class NetworkService: NetworkServiceProtocol {
     var searchDataTask: URLSessionDataTask?
     var downloadCellDataTask: URLSessionDataTask?
@@ -47,7 +51,7 @@ class NetworkService: NetworkServiceProtocol {
         = query.replacingOccurrences(of: " ", with: ",")
         
         let urlString
-        = "https://api.flickr.com/services/feeds/photos_public.gne?format=json&nojsoncallback=1&tags=\(formattedQuery)"
+        = NetworkURLs.feedsUrlString + formattedQuery
         
         // Ensure the URL is valid
         guard let url = URL(string: urlString) else {
