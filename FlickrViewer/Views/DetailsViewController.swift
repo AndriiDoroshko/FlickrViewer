@@ -89,7 +89,6 @@ class DetailsViewController: UIViewController {
     private func updateViews() {
         guard let viewModel = viewModel else { return }
         
-        let title = viewModel.flickrItem.title
         imageView.image = viewModel.image
         titleLabel.text = viewModel.flickrItem.title
         descriptionLabel.text = viewModel.flickrItem.description
